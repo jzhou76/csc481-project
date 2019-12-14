@@ -105,7 +105,11 @@ void betterNum(int party, int num) {
       }
     }
   }
-  if (!Num_Alice.equal(ONE).reveal<bool>()) Counter_Alice = Counter_Alice + ONE;
+  if (!Num_Alice.equal(ONE).reveal<bool>()) {
+    // There is a prime factor that is greater than 1,000
+    primes_Alice[Counter_Alice.reveal<int>()] = Num_Alice;
+    Counter_Alice = Counter_Alice + ONE;
+  }
 
   // Compute the prime factors of Bob's input.
   Integer Counter_Bob(32, 0, BOB);
@@ -119,7 +123,10 @@ void betterNum(int party, int num) {
       }
     }
   }
-  if (!Num_Bob.equal(ONE).reveal<bool>()) Counter_Bob = Counter_Bob + ONE;
+  if (!Num_Bob.equal(ONE).reveal<bool>()) {
+    primes_Bob[Counter_Bob.reveal<int>()] = Num_Bob;
+    Counter_Bob = Counter_Bob + ONE;
+  }
 
   // Print out the computation results.
   cout << "Alice's input can be factorized to " <<
@@ -129,7 +136,9 @@ void betterNum(int party, int num) {
     Counter_Bob.reveal<int>() << " prime ";
   printPrimes(primes_Bob);
 
-  if (Counter_Alice.geq(Counter_Bob).reveal<bool>()) {
+  if (Counter_Alice.equal(Counter_Bob).reveal<bool>()) {
+    cout << "Alice's and Bob's input are the same good.\n";
+  } else if (Counter_Alice.geq(Counter_Bob).reveal<bool>()) {
     cout << "Bob's input is the better number.\n";
   } else {
     cout << "Alice's input is the better number.\n";

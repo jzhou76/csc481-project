@@ -102,7 +102,7 @@ void editDistance(int party, string s) {
   for (unsigned i = 1; i <= 5; i++) {
     for (unsigned j = 1; j <= 5; j++) {
       // If s1[i] == s2[j], then ed[i][j] = ed[i - 1][j - 1]
-      if (s1_Int_Arr[j - 1].equal(s2_Int_Arr[i - 1]).reveal<bool>()) {
+      if (s1_Int_Arr[i - 1].equal(s2_Int_Arr[j - 1]).reveal<bool>()) {
         ed[i][j] = ed[i - 1][j - 1];
       } else {
         // We have three options:
@@ -145,20 +145,20 @@ int main(int argc, char** argv) {
   }
 
   string s = string(argv[3]);
-    // Check if the input is in the correct format: a 5-char string
-    // with only 'A', 'T', 'G', 'C'
-    if (s.size() != 5) {
-      cout << "The string's size is not 5. ";
+  // Check if the input is in the correct format: a 5-char string
+  // with only 'A', 'T', 'G', 'C'
+  if (s.size() != 5) {
+    cout << "The string's size is not 5. ";
+    cout << "Please input a correct string.\n";
+    return -1;
+  }
+  for (char c : s) {
+    if (c != 'A' && c != 'T' && c != 'G' && c != 'C') {
+      cout << "Illegal character(s) in the string. ";
       cout << "Please input a correct string.\n";
       return -1;
     }
-    for (char c : s) {
-      if (c != 'A' && c != 'T' && c != 'G' && c != 'C') {
-        cout << "Illegal character(s) in the string. ";
-        cout << "Please input a correct string.\n";
-        return -1;
-      }
-    }
+  }
 
     editDistance(party, s);
 

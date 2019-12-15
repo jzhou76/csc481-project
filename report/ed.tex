@@ -1,3 +1,84 @@
 %==============================================================================%
 \section{Edit Distance}
 %==============================================================================%
+
+\subsection{Algorithm}
+We use Dynamic Programming to solve the Edit Distance problem.
+We use a 2-dimensional array ED[6][6] to represent the edit distance
+between the first ith characters of Alice's input and the first jth character
+of Bob's input; and Alice\_Input[i] means the ith character of Alice's input
+and Bob\_Input[j] means the jth character of Bob's input.
+The reason we need make each dimension to be 6 characters
+is that we need initialize the base case for the dynamic programming algorithm:
+we initialize ED[i][0] = i because it takes i steps to make the two input
+string the same if the second input is empty and the first input's size is i.
+For the same reason we initialize ED[0][j] = j.
+
+When computing ED[i][j] where neither i nor j is zero, if
+Alice\_Input[i] == Bob\_Input[j], ED[i][j] = ED[i - 1][j - 1];
+if not, there are three options to apply:
+\begin{enumerate}
+    \item Directly replace the Alice\_Input[i] with Bob\_Input[j];
+        ED[i][j] = 1 + ED[i - 1][j - 1].
+    \item Delete the Alice\_Input[i]; ED[i][j] = 1 + ED[i - 1][j].
+    \item Append Bob\_Input[j] to the end of Alice\_Input[i];
+        ED[i][j] = 1 + ED[i][j - 1].
+\end{enumerate}
+
+Apparently ED[i][j] should be the minimum result of the three cases.
+Algorithm~\ref{alg:ed_dp} shows the process described above.
+
+
+\begin{algorithm}[h]
+    \begin{algorithmic}[1]
+        \begin{footnotesize}
+        \State ED[6][6]: E[i][j] means the edit distance between the first ith
+        characters of Alice's input and the first jth character of Bob's input.
+        \Function{Edit\_Distance}{Input\_String}
+            % \State
+            \For{Each Element E of ED}
+                \Comment{Initialization}
+                \State Initialize E to Integer(32, 0, PUBLIC)
+            \EndFor
+
+            \State
+
+            \For{$i \in \{1, 2, 3, 4, 5\}$}
+            \State ED[i][0] = Integer(32, i, PUBLIC)
+            \EndFor
+            \For{$j \in \{1, 2, 3, 4, 5\}$}
+            \State ED[0][j] = Integer(32, j, PUBLIC)
+            \EndFor
+
+            \State
+
+            \For{$i \in \{1, 2, 3, 4, 5\}$}
+                \For{$j \in \{1, 2, 3, 4, 5\}$}
+                    \If{Alice\_Input[i] == Bob\_Input[j]}
+                        \State ED[i][j] = ED[i - 1][j - 1]
+                    \Else
+                        \State ED[i][j] = MIN(ED[i - 1][j], MIN(ED[i][j -
+                        1],ED[j - 1][j - 1])) + Integer(32, 1, PUBLIC)
+                    \EndIf
+                \EndFor
+            \EndFor
+        \EndFunction
+        \end{footnotesize}
+    \end{algorithmic}
+    \caption{Dynamic Programming Algorithm for Edit Distance}
+    \label{alg:ed_dp}
+\end{algorithm}
+
+\subsection{Implementation}
+The {\tt emp-toolkit} library does not implement a secure version of the
+{\tt string type}; so to realize comparison character by character, first we
+convert the input string to a sequence of the {\tt Integer} object defined
+in the {\tt emp-toolkit} library. Since an input string consists only of
+at most 4 characters `A', `T', `G',`C', we map them to be number 1, 2, 3, 4,
+and encode them into {\tt Integer} objects.
+In this way, we can compare the characters from Alice and Bob by comparing
+{\tt Integer} objects. Our implementation ensure security because after the
+initial ``character to Integer'' conversion, all
+the operations and their operators' types that are used to do the
+Dynamic Programming are defined by {\tt emp-toolkit} library, which means
+they all can be synthesized to secure garbled circuits.

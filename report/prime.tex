@@ -1,3 +1,62 @@
 %==============================================================================%
 \section{Primeness}
 %==============================================================================%
+Prime numbers are extremely important in Cryptography. We define a new
+property of a number: primeness. The primeness of a number is the number of
+its prime factors. For example, $12345 = 3 \times 5 \times 823$;
+so its primeness is 3.  We count the same prime factor accumulatively,
+e.g., 8's primeness is 3.
+We say that A is a better number than B in terms of primeness if A's primeness
+is less than B's.
+
+We define a secure 2-party computation problem: both Alice and Bob input
+a number, the output is whose input is a better number in terms of primeness.
+Since there is no existing efficient algorithm to factorize a big number,
+we restrict the input to be less than 1,000,000.
+
+\subsection{Algorithm and Implementation}
+To make the implementation easier, we chose a simple and straightforward
+algorithm to compute a number's primeness. Because the input number is
+less than 1 million, we know that it has at most one prime factor that is
+greater than 1,000. There are only 168 prime numbers less than 1,000.
+We can iterate over these 168 numbers and use modulo operation to find out
+how many a certain prime number appears in the input's factorization.
+We wrote a {\tt Python} script to generate these 168 prime numbers and
+put them in an array in our {\tt cpp} solution.
+
+To compute how many times a prime number is in the factorization of the input,
+intuitively we can use a simple {\tt while} loop to solve it as follows
+
+\begin{verbatim}
+while (num % prime == 0) {
+    prime_count++;
+    num = num / prime;
+}
+\end{verbatim}
+
+However, in order to successfully build garbled circuits, the number of
+iteration of a loop must be fixed during compile time. With this restriction,
+we need convert the loop above with a fixed iteration number.
+Luckily, for the result to be less than 1 million, the maximum exponent of
+a prime is a small number. For example, $2^{19} < 1,000,000$ and
+$2^{20} > 1,000,000$. So the factorization of a number less than 1 million
+has at most nineteen $2$ as a prime factor. Therefor, we can fix the
+iteration of computing the number of prime number 2 to be 19. Similarly
+we can fix the iteration numbers for all other prime numbers less than 1,000.
+Assume we have an array {\tt Prime\_Nums[168]} that contains all the prime
+numbers less than 1,000 and an array {\tt Prime\_Num\_Expo[168]} that
+contains the maximum exponent for each prime number, the following
+pseudo code shows the core part of our solution.
+
+\begin{verbatim}
+Integer Counter(32, 0, PUBLIC);
+for (int i = 0; i < 168; i++) {
+    Integer Prime(32, Prime_Nums[i], Public);
+    for (int j = 0; j < Prime_Num_Expo[i]; j++) {
+        if ((Input.equal(ZERO.reveal<bool>()) {
+            Counter = Counter + ONE;
+            Input = Input / Prime;
+        }
+    }
+}
+\end{verbatim}

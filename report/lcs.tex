@@ -1,3 +1,34 @@
 %==============================================================================%
 \section{Longest Common Subsequence}
 %==============================================================================%
+
+\subsection{Introduction}
+The longest common subsequence(LCS) problem is to find the longest subsequence that is common in all given inputs.
+It is widely used in both computer programs (e.g., file comparison program diff) and other scientific fields(e.g., linguistics).
+Traditionally, in order to compute LCS, inputs are public to all parties.
+However, adversities may learn additional information that individual may not want to disclose.
+For example, if someone wants to know the common availability with his/her colleague, he/she needs to share the date of all available.
+But the colleague could infer more information from the date, e.g., personal travel plan.
+Therefore, there is a need to implement a secure version to tackle LCS problem.
+
+
+\subsection{Algorithms and Implementation}
+In this project, we construct the problem as follows: Alice and Bob are two parties and each of them generates a fixed length of ASCII character array.
+The goal is to calculate the LCS length of two arrays without reveling the content of input to the other party.
+
+The LCS problem is solved by Dynamic Programming.
+We create a two-dimensional table({\tt lcs}) toAlice\_Input.length memoize the result.
+{\tt lcs[i][j]} stores the length of lcs for two inputs' prefix {\tt Alice\_Input[0:i-1]} and {\tt Bob\_Input[0:j-1]}.
+The final result is obtained from {\tt lcs[-1][-1]}.
+
+
+\begin{verbatim}
+for (int i = 1; i <= Alice_Input.length; i++) {
+    for (int j = 0; j < Bob_Input.length; j++) {
+        if (Alice_Input[i - 1] == Bob_Input[j - 1])
+            lcs[i][j] = lcs[i - 1][j - 1] + Integer(32, 1, PUBLIC);
+        else
+            lcs[i][j] = max(lcs[i - 1][j], m[i][j - 1]);
+    }
+}
+\end{verbatim}

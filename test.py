@@ -12,6 +12,10 @@ from random import randint
 argv = sys.argv
 
 
+'''
+run_ed() randomly generates two valid strings for the the Edit Distance
+problem, and then calls the edit_distance binary to do the secure computation.
+'''
 def run_ed():
     # Randomly generate two DNS sequences.
     ATGC_num_map = { 1:'A', 2:'T', 3:'G', 4:'C' }
@@ -27,6 +31,10 @@ def run_ed():
     print(os.popen(cmd).read())
 
 
+'''
+run_primeness() randomly generates two integers that are less than 1,000,000,
+and then calls the primeness binary to do the secure computation.
+'''
 def run_primeness():
     # Randomly generate two integer less than 1,000,000
     input_alice, input_bob = randint(2, 1000000), randint(2, 1000000)
@@ -37,6 +45,10 @@ def run_primeness():
     print(os.popen(cmd).read())
 
 
+'''
+run_lcs() randomly generates two integers between 10,000 and 99,999,
+converts them to strings as input for the lcs binary.
+'''
 def run_lcs():
     input_alice, input_bob = randint(10000, 99999), randint(10000, 99999)
 
@@ -55,7 +67,7 @@ if __name__ == "__main__":
         exit()
 
     os.chdir("/root/emp-sh2pc/build/bin")
-    
+
     if argv[1] == "ed":
         run_ed()
     elif argv[1] == "primeness":

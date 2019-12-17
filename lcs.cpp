@@ -24,42 +24,27 @@ void printInput(Integer s[INPUT_LENGTH]) {
 
 
 /**
- * editDistance(): securely computes the edit distance between two strings
- * whose sizes are both 5 and that consist of only 'A', 'T', 'G', and 'C'.
+ * lcs(): securely computes the length of longest common sequence
+ * of two arrays of chars
  * */
-void editDistance(int party, string s) {
-    // int s_int_arr[INPUT_LENGTH];
-    // for (unsigned i = 0; i < INPUT_LENGTH; i++)
-    //     s_int_arr[i] = (int)s[i];
-    // for (unsigned i = 0; i < 5; i++) {
-    //     s_int += pow(10, (4 - i)) * s_int_arr[i];
-    // }
-
-  
-    // Create secure Integer for the inputs.
-    // Integer s1(32, s, ALICE);
-    // Integer s2(32, s, BOB);
+void lcs(int party, string s) {
     // Helper Integer.
     Integer ONE(32, 1, PUBLIC);
-    Integer TEN(32, 10, PUBLIC);
 
-    // Split the input Integer into 5 individual ones that represent the
-    // 5 character because we need compare char by char (Integer by Integer here).
     Integer s1_Int_Arr[INPUT_LENGTH];
     Integer s2_Int_Arr[INPUT_LENGTH];
 
-    cout << "Checkpoint 1" << endl;
+    // Split the input string to corresponding party
     for(unsigned i = 0; i < INPUT_LENGTH; i++) {
         s1_Int_Arr[i] = Integer(32, s[i], ALICE);
         s2_Int_Arr[i] = Integer(32, s[i], BOB);
     }
 
   
-    cout << "Checkpoint 2" << endl;
-    // ed[i][j] means the edit distance bewtween the first i chars of s1
-    // and first j chars of s2.
+    // ed[i][j] means the length of least common subsequence between the first
+    // i chars of s1 and first j chars of s2.
     Integer ed[INPUT_LENGTH + 1][INPUT_LENGTH + 1];
-    // Initialize first row and first column to be 0
+    // Initialize the table elements to be 0
     for (unsigned i = 0; i <= INPUT_LENGTH; i++) {
         for (unsigned j = 0; j <= INPUT_LENGTH; j++) {
             ed[i][j] = Integer(32, 0, PUBLIC);
@@ -68,7 +53,7 @@ void editDistance(int party, string s) {
 
     for (unsigned i = 1; i <= INPUT_LENGTH; i++) {
         for (unsigned j = 1; j <= INPUT_LENGTH; j++) {
-            if (s1_Int_Arr[j - 1].equal(s2_Int_Arr[i - 1]).reveal<bool>()) {
+            if (s1_Int_Arr[i - 1].equal(s2_Int_Arr[j - 1]).reveal<bool>()) {
                 ed[i][j] = ed[i - 1][j - 1] + ONE;
             } else {
                 if (ed[i - 1][j].geq(ed[i][j - 1]).reveal<bool>())
@@ -106,7 +91,7 @@ int main(int argc, char** argv) {
         cout << "Error. The string's size is not " << INPUT_LENGTH << ".";
         return -1;
     }
-    editDistance(party, s);
+    lcs(party, s);
 
     delete io;
 }

@@ -37,9 +37,13 @@ def run_primeness():
     print(os.popen(cmd).read())
 
 
-# def run_lcs():
-#     return
-    
+def run_lcs():
+    input_alice, input_bob = randint(10000, 99999), randint(10000, 99999)
+
+    cmd = "./lcs 1 12345 " + str(input_alice) + " & " + \
+          "./lcs 2 12345 " + str(input_bob)
+
+    print(os.popen(cmd).read())
 
 
 #

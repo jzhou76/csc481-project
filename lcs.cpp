@@ -53,14 +53,18 @@ void lcs(int party, string s) {
 
     for (unsigned i = 1; i <= INPUT_LENGTH; i++) {
         for (unsigned j = 1; j <= INPUT_LENGTH; j++) {
-            if (s1_Int_Arr[i - 1].equal(s2_Int_Arr[j - 1]).reveal<bool>()) {
-                ed[i][j] = ed[i - 1][j - 1] + ONE;
-            } else {
-                if (ed[i - 1][j].geq(ed[i][j - 1]).reveal<bool>())
-                    ed[i][j] = ed[i - 1][j];
-                else
-                    ed[i][j] = ed[i][j - 1];
-            }
+            // if (s1_Int_Arr[i - 1].equal(s2_Int_Arr[j - 1]).reveal<bool>()) {
+            //     ed[i][j] = ed[i - 1][j - 1] + ONE;
+            // } else {
+            //     if (ed[i - 1][j].geq(ed[i][j - 1]).reveal<bool>())
+            //         ed[i][j] = ed[i - 1][j];
+            //     else
+            //         ed[i][j] = ed[i][j - 1];
+            // }
+            ed[i][j] = ed[i][j - 1].select(ed[i - 1][j].geq(ed[i][j - 1]),
+                                                            ed[i - 1][j]);
+            ed[i][j] = ed[i][j].select(s1_Int_Arr[i - 1].equal(s2_Int_Arr[j - 1]),
+                                       ed[i - 1][j - 1] + ONE);
         }
     }
   
